@@ -1,0 +1,479 @@
+<h2>Admin yonetim sayfası</h2>
+<hr />
+<!--<button class="btn btn-primary" (click)=fetchAdminData()>Oğrenci İşlemleri</button> &nbsp;
+<button class="btn btn-primary" (click)=fetchAdminData()>Müfredat İşlemleri</button>&nbsp;
+<button class="btn btn-primary" (click)=fetchAdminData()>Oğrenci Müfredat İşlemleri</button>&nbsp;
+<button class="btn btn-primary" (click)=fetchAdminData()>Ders İşlemleri</button>&nbsp;-->
+
+<div>
+  <button class="btn-primary" (click)=showAddModal()>Oğrenci Ekle</button>
+  <br />
+  <br />
+  <br />
+  <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="ogrenciler.length">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Oğrenci No</th>
+        <th>TCNo</th>
+        <th>Ad Soyad</th>
+        <th>Doğum tarihi</th>
+        <th>Doğum Yeri</th>
+        <th>Mufredat</th>
+        <th>İşlemler</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let ogrenci of ogrenciler">
+        <td>{{ ogrenci.id }}</td>
+        <td>{{ ogrenci.ogrNo }}</td>
+        <td>{{ ogrenci.kimlik.tcno }}</td>
+        <td>{{ ogrenci.kimlik.ad }} {{ ogrenci.kimlik.soyad }}</td>
+        <td>{{ ogrenci.kimlik.dogumTarihi }}</td>
+        <td>{{ ogrenci.kimlik.dogumYeri }}</td>
+        <td>{{ ogrenci.mufredat.mufredatAdi }}</td>
+        <td><button class="btn btn-warning" (click)=showEditModal(ogrenci)>Güncelle</button>&nbsp;<button class="btn btn-primary" (click)=showIletisimModal(ogrenci)>İletişim bilgileri</button></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+
+
+</div>
+
+<div class="modal"
+     tabindex="-1"
+     role="dialog"
+     [ngStyle]="{'display':displayStyle}">
+  <div class="modal-dialog" role="document" style="width: 80% !important; max-width: 2000px !important;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Oğrenci ekleme</h4>
+      </div>
+      <div class="modal-body">
+
+        <form [formGroup]="ogrenciForm" (ngSubmit)="onSubmit()">
+          <div class="row">
+            <div class="col-4">
+              <div class="form-group">
+
+                <label for="ogrNo">Oğrenci No</label>
+                <input type="number" formControlName="ogrNo" class="form-control" tabindex="1" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && ogrenciFormControl.ogrNo.errors }" />
+                <div *ngIf="submitted && ogrenciFormControl.ogrNo.errors" class="invalid-feedback">
+                  <div *ngIf="ogrenciFormControl.ogrNo.errors.required">Oğrenci No Zorunludur</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label for="tcno">TCNO</label>
+                <input type="number" formControlName="tcno" class="form-control" tabindex="2" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && ogrenciFormControl.tcno.errors }" />
+                <div *ngIf="submitted && ogrenciFormControl.tcno.errors" class="invalid-feedback">
+                  <div *ngIf="ogrenciFormControl.tcno.errors.required">TCNO Zorunludur</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label for="mufredatId">Mufredat</label>
+                <select formControlName="mufredatId" class="form-control" tabindex="2" autofocus
+                        [ngClass]="{ 'is-invalid': submitted && ogrenciFormControl.mufredatId.errors }">
+
+                  <option *ngFor="let mufredat of mufredatListesi" value="{{mufredat.id}}">{{mufredat.mufredatAdi}}</option>
+
+
+                </select>
+                <div *ngIf="submitted && ogrenciFormControl.mufredatId.errors" class="invalid-feedback">
+                  <div *ngIf="ogrenciFormControl.mufredatId.errors.required">Mufredat Zorunludur</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="ad">Ad</label>
+                <input type="text" formControlName="ad" class="form-control" tabindex="3" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && ogrenciFormControl.ad.errors }" />
+                <div *ngIf="submitted && ogrenciFormControl.ad.errors" class="invalid-feedback">
+                  <div *ngIf="ogrenciFormControl.ad.errors.required">Ad Zorunludur</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label for="soyad">Soyad</label>
+                <input type="text" formControlName="soyad" class="form-control" tabindex="4" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && ogrenciFormControl.soyad.errors }" />
+                <div *ngIf="submitted && ogrenciFormControl.soyad.errors" class="invalid-feedback">
+                  <div *ngIf="ogrenciFormControl.soyad.errors.required">Soyad Zorunludur</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="dogumYeri">Doğum yeri</label>
+                <input type="text" formControlName="dogumYeri" class="form-control" tabindex="5" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && ogrenciFormControl.dogumYeri.errors }" />
+                <div *ngIf="submitted && ogrenciFormControl.dogumYeri.errors" class="invalid-feedback">
+                  <div *ngIf="ogrenciFormControl.dogumYeri.errors.required">Doğum yeri Zorunludur</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+
+              <div class="form-group">
+                <label for="dogumTarihi">Doğum tarihi</label>
+                <input type="date" formControlName="dogumTarihi" class="form-control" tabindex="6" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && ogrenciFormControl.dogumTarihi.errors }" />
+                <div *ngIf="submitted && ogrenciFormControl.dogumTarihi.errors" class="invalid-feedback">
+                  <div *ngIf="ogrenciFormControl.dogumTarihi.errors.required">Doğum tarihi Zorunludur</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group">
+                <label for="adres">Adres</label>
+                <input type="text" formControlName="adres" class="form-control" tabindex="7" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && ogrenciFormControl.adres.errors }" />
+                <div *ngIf="submitted && ogrenciFormControl.adres.errors" class="invalid-feedback">
+                  <div *ngIf="ogrenciFormControl.adres.errors.required">Adres Zorunludur</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="il">İl</label>
+                <input type="text" formControlName="il" class="form-control" tabindex="8" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && ogrenciFormControl.il.errors }" />
+                <div *ngIf="submitted && ogrenciFormControl.il.errors" class="invalid-feedback">
+                  <div *ngIf="ogrenciFormControl.il.errors.required">İl Zorunludur</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label for="ilce">İlçe</label>
+                <input type="text" formControlName="ilce" class="form-control" tabindex="9" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && ogrenciFormControl.ilce.errors }" />
+                <div *ngIf="submitted && ogrenciFormControl.ilce.errors" class="invalid-feedback">
+                  <div *ngIf="ogrenciFormControl.ilce.errors.required">İlçe Zorunludur</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" formControlName="email" class="form-control" tabindex="10" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && ogrenciFormControl.email.errors }" />
+                <div *ngIf="submitted && ogrenciFormControl.email.errors" class="invalid-feedback">
+                  <div *ngIf="ogrenciFormControl.email.errors.required">Email Zorunludur</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label for="gsm">Telefon</label>
+                <input type="number" formControlName="gsm" class="form-control" tabindex="11" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && ogrenciFormControl.gsm.errors }" />
+                <div *ngIf="submitted && ogrenciFormControl.gsm.errors" class="invalid-feedback">
+                  <div *ngIf="ogrenciFormControl.gsm.errors.required">Telefon Zorunludur</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="kullaniciAdi">Kullanıcı Adı</label>
+                <input type="text" formControlName="kullaniciAdi" class="form-control" tabindex="12" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && ogrenciFormControl.kullaniciAdi.errors }" />
+                <div *ngIf="submitted && ogrenciFormControl.kullaniciAdi.errors" class="invalid-feedback">
+                  <div *ngIf="ogrenciFormControl.kullaniciAdi.errors.required">Kullanıcı Adı Zorunludur</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label for="sifre">Şifre</label>
+                <input type="password" formControlName="sifre" class="form-control" tabindex="13" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && ogrenciFormControl.sifre.errors }" />
+                <div *ngIf="submitted && ogrenciFormControl.sifre.errors" class="invalid-feedback">
+                  <div *ngIf="ogrenciFormControl.sifre.errors.required">Şifre Zorunludur</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button [disabled]="loading" class="btn btn-primary">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+            Ekle
+          </button>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger"
+                (click)="closeAddModal()">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<div class="modal"
+     tabindex="-1"
+     role="dialog"
+     [ngStyle]="{'display':displayEditStyle}">
+  <div class="modal-dialog" role="document" style="width: 80% !important; max-width: 2000px !important;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Oğrenci Güncelleme</h4>
+      </div>
+      <div class="modal-body">
+
+        <form [formGroup]="ogrenciEditForm" (ngSubmit)="onSubmitEdit()">
+          <div class="row">
+            <div class="col-4">
+              <div class="form-group">
+                <input type="hidden" formControlName="ogrId" id="ogrId" />
+                <input type="hidden" formControlName="kimlikId" id="kimlikId" />
+                <input type="hidden" formControlName="iletisimId" id="iletisimId" />
+                <input type="hidden" formControlName="kullaniciId" id="kullaniciId" />
+                <label for="ogrNo">Oğrenci No</label>
+                <input type="number" formControlName="ogrNo" id="ogrNo" class="form-control" tabindex="1" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && ogrenciEditFormControl.ogrNo.errors }" />
+                <div *ngIf="submitted && ogrenciFormControl.ogrNo.errors" class="invalid-feedback">
+                  <div *ngIf="ogrenciFormControl.ogrNo.errors.required">Oğrenci No Zorunludur</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label for="tcno">TCNO</label>
+                <input type="number" formControlName="tcno" id="tcno" class="form-control" tabindex="2" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && ogrenciEditFormControl.tcno.errors }" />
+                <div *ngIf="submitted && ogrenciEditFormControl.tcno.errors" class="invalid-feedback">
+                  <div *ngIf="ogrenciEditFormControl.tcno.errors.required">TCNO Zorunludur</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label for="mufredatId">Mufredat</label>
+                <select formControlName="mufredatId" id="mufredatId" class="form-control" tabindex="2" autofocus
+                        [ngClass]="{ 'is-invalid': submitted && ogrenciEditFormControl.mufredatId.errors }">
+
+                  <option *ngFor="let mufredat of mufredatListesi" value="{{mufredat.id}}">{{mufredat.mufredatAdi}}</option>
+
+
+                </select>
+                <div *ngIf="submitted && ogrenciEditFormControl.mufredatId.errors" class="invalid-feedback">
+                  <div *ngIf="ogrenciEditFormControl.mufredatId.errors.required">Mufredat Zorunludur</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="ad">Ad</label>
+                <input type="text" formControlName="ad" id="ad" class="form-control" tabindex="3" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && ogrenciEditFormControl.ad.errors }" />
+                <div *ngIf="submitted && ogrenciEditFormControl.ad.errors" class="invalid-feedback">
+                  <div *ngIf="ogrenciEditFormControl.ad.errors.required">Ad Zorunludur</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label for="soyad">Soyad</label>
+                <input type="text" formControlName="soyad" id="soyad" class="form-control" tabindex="4" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && ogrenciEditFormControl.soyad.errors }" />
+                <div *ngIf="submitted && ogrenciEditFormControl.soyad.errors" class="invalid-feedback">
+                  <div *ngIf="ogrenciEditFormControl.soyad.errors.required">Soyad Zorunludur</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="dogumYeri">Doğum yeri</label>
+                <input type="text" formControlName="dogumYeri" id="dogumYeri" class="form-control" tabindex="5" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && ogrenciEditFormControl.dogumYeri.errors }" />
+                <div *ngIf="submitted && ogrenciEditFormControl.dogumYeri.errors" class="invalid-feedback">
+                  <div *ngIf="ogrenciEditFormControl.dogumYeri.errors.required">Doğum yeri Zorunludur</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+
+              <div class="form-group">
+                <label for="dogumTarihi">Doğum tarihi</label>
+                <input type="date" formControlName="dogumTarihi" id="dogumTarihi" class="form-control" tabindex="6" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && ogrenciEditFormControl.dogumTarihi.errors }" />
+                <div *ngIf="submitted && ogrenciEditFormControl.dogumTarihi.errors" class="invalid-feedback">
+                  <div *ngIf="ogrenciEditFormControl.dogumTarihi.errors.required">Doğum tarihi Zorunludur</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group">
+                <label for="adres">Adres</label>
+                <input type="text" formControlName="adres" id="adres" class="form-control" tabindex="7" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && ogrenciEditFormControl.adres.errors }" />
+                <div *ngIf="submitted && ogrenciEditFormControl.adres.errors" class="invalid-feedback">
+                  <div *ngIf="ogrenciEditFormControl.adres.errors.required">Adres Zorunludur</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="il">İl</label>
+                <input type="text" formControlName="il" id="il" class="form-control" tabindex="8" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && ogrenciEditFormControl.il.errors }" />
+                <div *ngIf="submitted && ogrenciEditFormControl.il.errors" class="invalid-feedback">
+                  <div *ngIf="ogrenciEditFormControl.il.errors.required">İl Zorunludur</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label for="ilce">İlçe</label>
+                <input type="text" formControlName="ilce" id="ilce" class="form-control" tabindex="9" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && ogrenciEditFormControl.ilce.errors }" />
+                <div *ngIf="submitted && ogrenciEditFormControl.ilce.errors" class="invalid-feedback">
+                  <div *ngIf="ogrenciEditFormControl.ilce.errors.required">İlçe Zorunludur</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" formControlName="email" id="email" class="form-control" tabindex="10" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && ogrenciEditFormControl.email.errors }" />
+                <div *ngIf="submitted && ogrenciEditFormControl.email.errors" class="invalid-feedback">
+                  <div *ngIf="ogrenciEditFormControl.email.errors.required">Email Zorunludur</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label for="gsm">Telefon</label>
+                <input type="number" formControlName="gsm" id="gsm" class="form-control" tabindex="11" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && ogrenciEditFormControl.gsm.errors }" />
+                <div *ngIf="submitted && ogrenciEditFormControl.gsm.errors" class="invalid-feedback">
+                  <div *ngIf="ogrenciEditFormControl.gsm.errors.required">Telefon Zorunludur</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="kullaniciAdi">Kullanıcı Adı</label>
+                <input type="text" formControlName="kullaniciAdi" id="kullaniciAdi" class="form-control" tabindex="12" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && ogrenciEditFormControl.kullaniciAdi.errors }" />
+                <div *ngIf="submitted && ogrenciEditFormControl.kullaniciAdi.errors" class="invalid-feedback">
+                  <div *ngIf="ogrenciEditFormControl.kullaniciAdi.errors.required">Kullanıcı Adı Zorunludur</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label for="sifre">Şifre</label>
+                <input type="password" formControlName="sifre" id="sifre" class="form-control" tabindex="13" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && ogrenciEditFormControl.sifre.errors }" />
+                <div *ngIf="submitted && ogrenciEditFormControl.sifre.errors" class="invalid-feedback">
+                  <div *ngIf="ogrenciEditFormControl.sifre.errors.required">Şifre Zorunludur</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button [disabled]="loading" class="btn btn-primary">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+            Güncelle
+          </button>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger"
+                (click)="closeEditModal()">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div class="modal"
+     tabindex="-1"
+     role="dialog"
+     [ngStyle]="{'display':displayIletisimStyle}">
+  <div class="modal-dialog" role="document" style="width: 50% !important; max-width: 2000px !important;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">İletişim bilgileri</h4>
+      </div>
+      <div class="modal-body">
+
+        <div class="row">
+          <div class="col-12" *ngIf="iletisim != undefined" >
+            <b>Adres: </b> {{iletisim.adres}} <br>
+            <b>il: </b> {{iletisim.il}} <br>
+            <b>ilce: </b> {{iletisim.ilce}} <br>
+            <b>email: </b> {{iletisim.email}} <br>
+            <b>telefon: </b> {{iletisim.gsm}} <br>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger"
+                (click)="closeIletisimModal()">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+

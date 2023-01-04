@@ -1,0 +1,118 @@
+<h2>Admin yonetim sayfası</h2>
+<hr />
+
+<div>
+  <button class="btn-primary" (click)=showAddModal()>Müfredat Ekle</button>
+  <br />
+  <br />
+  <br />
+  <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="mufredatListesi.length">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Müfredat adı</th>
+        <th>işlem</th>
+        
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let mufredat of mufredatListesi">
+        <td>{{ mufredat.id }}</td>
+        <td>{{ mufredat.mufredatAdi }}</td>
+        <td><button class="btn btn-warning" (click)=showEditModal(mufredat)>Güncelle</button></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+
+
+</div>
+
+<div class="modal"
+     tabindex="-1"
+     role="dialog"
+     [ngStyle]="{'display':displayStyle}">
+  <div class="modal-dialog" role="document" style="width: 30% !important; max-width: 2000px !important;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Müfredat ekleme</h4>
+      </div>
+      <div class="modal-body">
+
+        <form [formGroup]="mufredatForm" (ngSubmit)="onSubmit()">
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group">
+
+                <label for="mufredatAdi">Müfredat Adı</label>
+                <input type="text" formControlName="mufredatAdi" class="form-control" tabindex="1" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && mufredatFormControl.mufredatAdi.errors }" />
+                <div *ngIf="submitted && mufredatFormControl.mufredatAdi.errors" class="invalid-feedback">
+                  <div *ngIf="mufredatFormControl.mufredatAdi.errors.required">Müfredat Adı Zorunludur</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button [disabled]="loading" class="btn btn-primary">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+            Ekle
+          </button>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger"
+                (click)="closeAddModal()">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<div class="modal"
+     tabindex="-1"
+     role="dialog"
+     [ngStyle]="{'display':displayEditStyle}">
+  <div class="modal-dialog" role="document" style="width: 30% !important; max-width: 2000px !important;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Müfredat Güncelleme</h4>
+      </div>
+      <div class="modal-body">
+
+        <form [formGroup]="mufredatEditForm" (ngSubmit)="onSubmitEdit()">
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group">
+                <input type="hidden" formControlName="mufredatId" id="mufredatId" />
+                <label for="mufredatAdi">Müfredat Adı</label>
+                <input type="text" formControlName="mufredatAdi" id="mufredatAdi" class="form-control" tabindex="1" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && mufredatEditFormControl.mufredatAdi.errors }" />
+                <div *ngIf="submitted && mufredatFormControl.mufredatAdi.errors" class="invalid-feedback">
+                  <div *ngIf="mufredatFormControl.mufredatAdi.errors.required">Müfredat Adı Zorunludur</div>
+                </div>
+              </div>
+            </div>
+         </div>
+          <button [disabled]="loading" class="btn btn-primary">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+            Güncelle
+          </button>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger"
+                (click)="closeEditModal()">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

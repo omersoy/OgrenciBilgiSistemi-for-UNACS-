@@ -1,0 +1,176 @@
+<h2>Admin yonetim sayfası</h2>
+<hr />
+
+<div>
+  <button class="btn-primary" (click)=showAddModal()>Müfredat ders Ekle</button>
+  <br />
+  <br />
+  <br />
+  <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="mfdListesi.length">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Ders kodu</th>
+        <th>Ders Adi</th>
+        <th>Kredi</th>
+        <th>Müfredat adi</th>
+        <th>İşlem</th>
+        
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let mfd of mfdListesi">
+        <td>{{ mfd.id }}</td>
+        <td>{{ mfd.dersler.dersKodu }}</td>
+        <td>{{ mfd.dersler.dersAdi }}</td>
+        <td>{{ mfd.dersler.kredi }}</td>
+        <td>{{ mfd.mufredat.mufredatAdi }}</td>
+       
+        <td><button class="btn btn-warning" (click)=showEditModal(mfd)>Güncelle</button></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+
+
+</div>
+
+<div class="modal"
+     tabindex="-1"
+     role="dialog"
+     [ngStyle]="{'display':displayStyle}">
+  <div class="modal-dialog" role="document" style="width: 30% !important; max-width: 2000px !important;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Müfredat ekleme</h4>
+      </div>
+      <div class="modal-body">
+
+        <form [formGroup]="mfdForm" (ngSubmit)="onSubmit()">
+
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group">
+
+                <label for="mufredatId">Mufredat</label>
+                <select formControlName="mufredatId" class="form-control" tabindex="1" autofocus
+                        [ngClass]="{ 'is-invalid': submitted && mfdFormControl.mufredatId.errors }">
+                  <option *ngFor="let mufredat of mufredatListesi" value="{{mufredat.id}}">{{mufredat.mufredatAdi}}</option>
+
+                </select>
+
+
+                <div *ngIf="submitted && mfdFormControl.mufredatId.errors" class="invalid-feedback">
+                  <div *ngIf="mfdFormControl.mufredatId.errors.required">Mufredat Zorunludur</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group">
+
+                <label for="dersId">Ders</label>
+                <select formControlName="dersId" class="form-control" tabindex="1" autofocus
+                        [ngClass]="{ 'is-invalid': submitted && mfdFormControl.dersId.errors }">
+                  <option *ngFor="let ders of dersListesi" value="{{ders.id}}">{{ders.dersAdi}}({{ders.dersKodu}})</option>
+
+                </select>
+
+
+                <div *ngIf="submitted && mfdFormControl.dersId.errors" class="invalid-feedback">
+                  <div *ngIf="mfdFormControl.dersId.errors.required">Ders Zorunludur</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button [disabled]="loading" class="btn btn-primary">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+            Ekle
+          </button>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger"
+                (click)="closeAddModal()">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<div class="modal"
+     tabindex="-1"
+     role="dialog"
+     [ngStyle]="{'display':displayEditStyle}">
+  <div class="modal-dialog" role="document" style="width: 30% !important; max-width: 2000px !important;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Müfredat Güncelleme</h4>
+      </div>
+      <div class="modal-body">
+
+        <form [formGroup]="mfdEditForm" (ngSubmit)="onSubmitEdit()">
+
+
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group">
+                <input type="hidden" formControlName="id" />
+                <label for="mufredatId">Mufredat</label>
+                <select formControlName="mufredatId" class="form-control" tabindex="1" autofocus
+                        [ngClass]="{ 'is-invalid': submitted && mfdEditFormControl.mufredatId.errors }">
+                  <option *ngFor="let mufredat of mufredatListesi" value="{{mufredat.id}}">{{mufredat.mufredatAdi}}</option>
+
+                </select>
+
+
+                <div *ngIf="submitted && mfdEditFormControl.mufredatId.errors" class="invalid-feedback">
+                  <div *ngIf="mfdEditFormControl.mufredatId.errors.required">Mufredat Zorunludur</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group">
+
+                <label for="dersId">Ders</label>
+                <select formControlName="dersId" class="form-control" tabindex="1" autofocus
+                        [ngClass]="{ 'is-invalid': submitted && mfdEditFormControl.dersId.errors }">
+                  <option *ngFor="let ders of dersListesi" value="{{ders.id}}">{{ders.dersAdi}}({{ders.dersKodu}})</option>
+
+                </select>
+
+
+                <div *ngIf="submitted && mfdEditFormControl.dersId.errors" class="invalid-feedback">
+                  <div *ngIf="mfdEditFormControl.dersId.errors.required">Ders Zorunludur</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button [disabled]="loading" class="btn btn-primary">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+            Güncelle
+          </button>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger"
+                (click)="closeEditModal()">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

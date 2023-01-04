@@ -1,0 +1,209 @@
+<h2>Admin yonetim sayfası</h2>
+<hr />
+
+<div>
+  <button class="btn-primary" (click)=showAddModal()>Ders Ekle</button>
+  <br />
+  <br />
+  <br />
+  <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="dersListesi.length">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Ders kodu</th>
+        <th>Ders Adi</th>
+        <th>Durum</th>
+        <th>Kredi</th>
+        <th>İşlem</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let ders of dersListesi">
+        <td>{{ ders.id }}</td>
+        <td>{{ ders.dersKodu }}</td>
+        <td>{{ ders.dersAdi }}</td>
+        <td>{{ ders.durun }}</td>
+        <td>{{ ders.kredi }}</td>
+        <td><button class="btn btn-warning" (click)=showEditModal(ders)>Güncelle</button></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+
+
+</div>
+
+<div class="modal"
+     tabindex="-1"
+     role="dialog"
+     [ngStyle]="{'display':displayStyle}">
+  <div class="modal-dialog" role="document" style="width: 30% !important; max-width: 2000px !important;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Müfredat ekleme</h4>
+      </div>
+      <div class="modal-body">
+
+        <form [formGroup]="dersForm" (ngSubmit)="onSubmit()">
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group">
+
+                <label for="dersAdi">Ders Adı</label>
+                <input type="text" formControlName="dersAdi" class="form-control" tabindex="1" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && dersFormControl.dersAdi.errors }" />
+                <div *ngIf="submitted && dersFormControl.dersAdi.errors" class="invalid-feedback">
+                  <div *ngIf="dersFormControl.dersAdi.errors.required">Ders Adı Zorunludur</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group">
+
+                <label for="dersKodu">Ders Kodu</label>
+                <input type="text" formControlName="dersKodu" class="form-control" tabindex="1" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && dersFormControl.dersKodu.errors }" />
+                <div *ngIf="submitted && dersFormControl.dersKodu.errors" class="invalid-feedback">
+                  <div *ngIf="dersFormControl.dersKodu.errors.required">Ders Kodu Zorunludur</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group">
+
+                <label for="kredi">Ders kredi</label>
+                <input type="number" formControlName="kredi" class="form-control" tabindex="1" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && dersFormControl.kredi.errors }" />
+                <div *ngIf="submitted && dersFormControl.kredi.errors" class="invalid-feedback">
+                  <div *ngIf="dersFormControl.kredi.errors.required">Ders kredi Zorunludur</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group">
+
+                <label for="durum">Ders Durum</label>
+                <select formControlName="durum" class="form-control" tabindex="1" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && dersFormControl.durum.errors }" >
+                      <option value="1" selected>Aktif</option>
+                      <option value="0" selected>Passif</option>
+                </select>
+                <div *ngIf="submitted && dersFormControl.durum.errors" class="invalid-feedback">
+                  <div *ngIf="dersFormControl.durum.errors.required">Ders kredi Zorunludur</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button [disabled]="loading" class="btn btn-primary">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+            Ekle
+          </button>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger"
+                (click)="closeAddModal()">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal"
+     tabindex="-1"
+     role="dialog"
+     [ngStyle]="{'display':displayEditStyle}">
+  <div class="modal-dialog" role="document" style="width: 30% !important; max-width: 2000px !important;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Müfredat Güncelleme</h4>
+      </div>
+      <div class="modal-body">
+
+        <form [formGroup]="dersEditForm" (ngSubmit)="onSubmitEdit()">
+
+
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group">
+
+                <label for="dersAdi">Ders Adı</label>
+                <input type="hidden" formControlName="id" id="id" />
+                <input type="text" formControlName="dersAdi" class="form-control" tabindex="1" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && dersEditFormControl.dersAdi.errors }" />
+                <div *ngIf="submitted && dersEditFormControl.dersAdi.errors" class="invalid-feedback">
+                  <div *ngIf="dersEditFormControl.dersAdi.errors.required">Ders Adı Zorunludur</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group">
+
+                <label for="dersKodu">Ders Kodu</label>
+                <input type="text" formControlName="dersKodu" class="form-control" tabindex="1" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && dersEditFormControl.dersKodu.errors }" />
+                <div *ngIf="submitted && dersEditFormControl.dersKodu.errors" class="invalid-feedback">
+                  <div *ngIf="dersEditFormControl.dersKodu.errors.required">Ders Kodu Zorunludur</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group">
+
+                <label for="kredi">Ders kredi</label>
+                <input type="number" formControlName="kredi" class="form-control" tabindex="1" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && dersEditFormControl.kredi.errors }" />
+                <div *ngIf="submitted && dersEditFormControl.kredi.errors" class="invalid-feedback">
+                  <div *ngIf="dersEditFormControl.kredi.errors.required">Ders kredi Zorunludur</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group">
+
+                <label for="durum">Ders Durum</label>
+                <select formControlName="durum" class="form-control" tabindex="1" autofocus
+                        [ngClass]="{ 'is-invalid': submitted && dersEditFormControl.durum.errors }">
+                  <option value="1" selected>Aktif</option>
+                  <option value="0" selected>Passif</option>
+                </select>
+                <div *ngIf="submitted && dersEditFormControl.durum.errors" class="invalid-feedback">
+                  <div *ngIf="dersEditFormControl.durum.errors.required">Ders kredi Zorunludur</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button [disabled]="loading" class="btn btn-primary">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+            Güncelle
+          </button>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger"
+                (click)="closeEditModal()">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,130 @@
+<h2>Öğrenci sayfası</h2>
+<hr />
+<div>
+
+  <br />
+  <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="ogrenciler.length">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Oğrenci No</th>
+        <th>TCNo</th>
+        <th>Ad Soyad</th>
+        <th>Doğum tarihi</th>
+        <th>Doğum Yeri</th>
+        <th>Mufredat</th>
+        <th>İşlemler</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let ogrenci of ogrenciler">
+        <td>{{ ogrenci.id }}</td>
+        <td>{{ ogrenci.ogrNo }}</td>
+        <td>{{ ogrenci.kimlik.tcno }}</td>
+        <td>{{ ogrenci.kimlik.ad }} {{ ogrenci.kimlik.soyad }}</td>
+        <td>{{ ogrenci.kimlik.dogumTarihi }}</td>
+        <td>{{ ogrenci.kimlik.dogumYeri }}</td>
+        <td>{{ ogrenci.mufredat.mufredatAdi }}</td>
+        <td><button class="btn btn-warning" (click)=showEditModal(ogrenci)>İletişim Bilgileri</button></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+
+
+</div>
+
+
+
+
+
+<div class="modal"
+     tabindex="-1"
+     role="dialog"
+     [ngStyle]="{'display':displayEditStyle}">
+  <div class="modal-dialog" role="document" style="width: 80% !important; max-width: 2000px !important;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Oğrenci Güncelleme</h4>
+      </div>
+      <div class="modal-body">
+
+        <form [formGroup]="ogrenciEditForm" (ngSubmit)="onSubmitEdit()">
+
+                <input type="hidden" formControlName="iletisimId" id="iletisimId" />
+               
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group">
+                <label for="adres">Adres</label>
+                <input type="text" formControlName="adres" id="adres" class="form-control" tabindex="7" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && ogrenciEditFormControl.adres.errors }" />
+                <div *ngIf="submitted && ogrenciEditFormControl.adres.errors" class="invalid-feedback">
+                  <div *ngIf="ogrenciEditFormControl.adres.errors.required">Adres Zorunludur</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="il">İl</label>
+                <input type="text" formControlName="il" id="il" class="form-control" tabindex="8" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && ogrenciEditFormControl.il.errors }" />
+                <div *ngIf="submitted && ogrenciEditFormControl.il.errors" class="invalid-feedback">
+                  <div *ngIf="ogrenciEditFormControl.il.errors.required">İl Zorunludur</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label for="ilce">İlçe</label>
+                <input type="text" formControlName="ilce" id="ilce" class="form-control" tabindex="9" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && ogrenciEditFormControl.ilce.errors }" />
+                <div *ngIf="submitted && ogrenciEditFormControl.ilce.errors" class="invalid-feedback">
+                  <div *ngIf="ogrenciEditFormControl.ilce.errors.required">İlçe Zorunludur</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" formControlName="email" id="email" class="form-control" tabindex="10" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && ogrenciEditFormControl.email.errors }" />
+                <div *ngIf="submitted && ogrenciEditFormControl.email.errors" class="invalid-feedback">
+                  <div *ngIf="ogrenciEditFormControl.email.errors.required">Email Zorunludur</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label for="gsm">Telefon</label>
+                <input type="number" formControlName="gsm" id="gsm" class="form-control" tabindex="11" autofocus
+                       [ngClass]="{ 'is-invalid': submitted && ogrenciEditFormControl.gsm.errors }" />
+                <div *ngIf="submitted && ogrenciEditFormControl.gsm.errors" class="invalid-feedback">
+                  <div *ngIf="ogrenciEditFormControl.gsm.errors.required">Telefon Zorunludur</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button [disabled]="loading" class="btn btn-primary">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+            Güncelle
+          </button>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger"
+                (click)="closeEditModal()">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

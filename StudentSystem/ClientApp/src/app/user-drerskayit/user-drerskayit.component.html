@@ -1,0 +1,81 @@
+<h2>Öğrenci sayfası</h2>
+<hr />
+
+<div>
+  <button class="btn-primary" (click)=showAddModal()>Ders Kayit Ekle</button>
+  <br />
+  <br />
+  <br />
+  <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="dkListesi.length">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Ders kodu</th>
+        <th>Ders Adi</th>
+        <th>Kredi</th>
+        
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let dk of dkListesi">
+        <td>{{ dk.id }}</td>
+        <td>{{ dk.dersler.dersKodu }}</td>
+        <td>{{ dk.dersler.dersAdi }}</td>
+        <td>{{ dk.dersler.kredi }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+
+
+</div>
+
+<div class="modal"
+     tabindex="-1"
+     role="dialog"
+     [ngStyle]="{'display':displayStyle}">
+  <div class="modal-dialog" role="document" style="width: 30% !important; max-width: 2000px !important;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Ders kayit ekleme</h4>
+      </div>
+      <div class="modal-body">
+
+        <form [formGroup]="mfdForm" (ngSubmit)="onSubmit()">
+
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group">
+
+                <label for="dersId">Ders</label>
+                <select formControlName="dersId" class="form-control" tabindex="1" autofocus
+                        [ngClass]="{ 'is-invalid': submitted && mfdFormControl.dersId.errors }">
+                  <option *ngFor="let mfd of mufredatDersListesi" value="{{mfd.dersler.id}}">{{mfd.dersler.dersAdi}}({{mfd.dersler.dersKodu}})</option>
+
+                </select>
+
+
+                <div *ngIf="submitted && mfdFormControl.dersId.errors" class="invalid-feedback">
+                  <div *ngIf="mfdFormControl.dersId.errors.required">Ders Zorunludur</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button [disabled]="loading" class="btn btn-primary">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+            Ekle
+          </button>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger"
+                (click)="closeAddModal()">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
